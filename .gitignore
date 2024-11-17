@@ -1,0 +1,6 @@
+.env
+/__pycache__/
+/character/
+!/character/data/
+/input_image/*.png
+/tmp/
