@@ -23,7 +23,7 @@ def cv2pil(image):
 # 生徒画像のアイコンの前処理
 def icon_image_preprocessing(img):
     # 背景色を透過
-    mask = cv2.imread('character/data/mask.png', cv2.IMREAD_GRAYSCALE)
+    mask = cv2.imread('data/mask.png', cv2.IMREAD_GRAYSCALE)
     img[mask > 0] = [255, 255, 255]
 
     # グレースケール化
