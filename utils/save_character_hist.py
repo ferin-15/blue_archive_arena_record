@@ -1,6 +1,4 @@
-import sys
-sys.path.append('C:\\Python312\\Lib\\site-packages')
-import joblib # type: ignore
+import joblib
 
 import cv2
 import glob
