@@ -28,7 +28,7 @@ async def on_message(message):
         return
     
     # 結果記録用のチャンネルのID
-    channel_id = os.getenv('DISCORD_CHANNEL_ID')
+    channel_id = int(os.getenv('DISCORD_CHANNEL_ID'))
 
     if message.channel.id == channel_id:
         # 画像が添付されているかチェック
