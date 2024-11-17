@@ -1,4 +1,6 @@
 .env
+.public.env
+
 /__pycache__/
 /character/*/
 !/character/
