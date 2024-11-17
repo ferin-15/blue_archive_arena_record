@@ -1,4 +1,3 @@
-import pyocr
 import glob
 import cv2
 import os
@@ -6,6 +5,9 @@ import joblib
 
 from PIL import Image
 from dotenv import load_dotenv
+
+if os.getenv('ENV') == 'private':
+    import pyocr
 
 
 class RecognizeArenaResult:
@@ -144,8 +146,11 @@ class RecognizeArenaResult:
                 raise Exception(f'{i+1} 番目の生徒の認識に失敗')
 
         # 相手の名前を読む
-        name_img = img[210 : 250, 1305 : 1550]
-        enemy_name = self.recognize_text(name_img, binary_threshold=200)
+        if os.get_environ('ENV') == 'private':
+            name_img = img[210 : 250, 1305 : 1550]
+            enemy_name = self.recognize_text(name_img, binary_threshold=200)
+        else:
+            enemy_name = ''
 
         return dict(
             is_atk=is_atk,

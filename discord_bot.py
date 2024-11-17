@@ -5,7 +5,9 @@ import discord
 import tempfile
 
 import recognize_arena_result
-import upload_to_spreadsheet
+
+if os.getenv('ENV') == 'private':
+    import upload_to_spreadsheet
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -14,7 +16,8 @@ client = discord.Client(intents=intents)
 load_dotenv()
 
 recognize_arena_result = recognize_arena_result.RecognizeArenaResult()
-upload_to_spreadsheet = upload_to_spreadsheet.UploadToSpreadSheet()
+if os.getenv('ENV') == 'private':
+    upload_to_spreadsheet = upload_to_spreadsheet.UploadToSpreadSheet()
 
 @client.event
 async def on_ready():
@@ -49,16 +52,30 @@ async def on_message(message):
                         is_atk = '攻撃' if result['is_atk'] else '防御'
                         is_win = '勝利' if result['is_win'] else '敗北'
                         character_list = result['character_list']
-                        await message.channel.send(
-                            f'{is_atk}, {is_win}, {character_list}'
-                        )
+
+                        # 攻撃側が先頭に来るように並び替え
+                        if not result['is_atk']:
+                            character_list = character_list[6:] + character_list[:6]
+
+                        # 攻撃側が勝利
+                        if (is_atk and is_win) or (not is_atk and not is_win):
+                            await message.channel.send(
+                                f'攻撃側勝利\n{character_list}'
+                            )
+                        # 防御側が勝利
+                        else:
+                            await message.channel.send(
+                                f'防御側勝利\n{character_list}'
+                            )
+
                     except Exception as e:
                         await message.channel.send(f'Error: {index} 枚目の画像で認識失敗, {e}')
                         continue
-                        
-                    result_list.append(result)
+                    
+                    if os.getenv('ENV') == 'private':
+                        result_list.append(result)
             
-            if len(result_list) > 0:
+            if len(result_list) > 0 and os.getenv('ENV') == 'private':
                 upload_to_spreadsheet.upload_result(result_list)
                 await message.channel.send('結果をアップロードしました')
 
