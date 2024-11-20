@@ -10,6 +10,11 @@ ENV LC_ALL ja_JP.UTF-8
 ENV TZ Asia/Tokyo
 ENV TERM xterm
 
+# 必要なシステム依存ライブラリをインストール
+RUN apt-get update && apt-get install -y \
+    libgl1 \
+    libglib2.0-0
+
 # pip install
 COPY requirements.txt /bot/
 RUN pip install -r requirements.txt
