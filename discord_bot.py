@@ -86,4 +86,5 @@ async def on_message(message):
         await message.channel.send('結果をアップロードしました')
 
 
+print('ENV=' + os.getenv('ENV'))
 client.run(os.getenv('DISCORD_BOT_TOKEN'))
