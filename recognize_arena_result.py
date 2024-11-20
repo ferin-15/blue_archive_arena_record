@@ -6,14 +6,13 @@ import joblib
 from PIL import Image
 from dotenv import load_dotenv
 
+load_dotenv()
 if os.getenv('ENV') == 'private':
     import pyocr
 
 
 class RecognizeArenaResult:
     def __init__(self):
-        load_dotenv()
-
         self.histgram_list = []
         with open('data/histgram_list.pkl', 'rb') as f:
             self.histgram_list = joblib.load(f)
@@ -146,7 +145,7 @@ class RecognizeArenaResult:
                 raise Exception(f'{i+1} 番目の生徒の認識に失敗')
 
         # 相手の名前を読む
-        if os.get_environ('ENV') == 'private':
+        if os.getenv('ENV') == 'private':
             name_img = img[210 : 250, 1305 : 1550]
             enemy_name = self.recognize_text(name_img, binary_threshold=200)
         else:
