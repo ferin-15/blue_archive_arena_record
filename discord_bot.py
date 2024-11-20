@@ -5,6 +5,7 @@ import discord
 import tempfile
 
 import recognize_arena_result
+from server import server_thread
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -82,5 +83,7 @@ async def on_message(message):
         await message.channel.send('結果をアップロードしました')
 
 
-print('ENV=' + os.getenv('ENV'))
+# Koyeb用 サーバー立ち上げ
+server_thread()
+
 client.run(os.getenv('DISCORD_BOT_TOKEN'))
