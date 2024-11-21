@@ -87,12 +87,16 @@ class UploadToSpreadSheet:
                 character_list = character_list[6:] + character_list[:6]
             
             # 勝利側を判定
-            winner = '防御側' if result['is_atk'] ^ result['is_win'] else '攻撃側'
+            winner = '防御' if result['is_atk'] ^ result['is_win'] else '攻撃'
+
+            # 入力者が攻撃側か防御側か判定
+            input_player_side = '攻撃' if result['is_atk'] else '防御'
 
             upload_list.append(
                 [
                     date,
                     result['player_name'],
+                    input_player_side,
                     winner,
                     character_list[0],
                     character_list[1],

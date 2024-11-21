@@ -82,7 +82,7 @@ async def on_message(message):
         result_txt = make_result_txt(result)
         await message.channel.send(result_txt)
 
-        # プレイヤー名を追加
+        # 入力したプレイヤー名を追加
         result.update({'player_name': message.author.name})
         result_list.append(result)
 
