@@ -84,6 +84,7 @@ async def on_message(message):
 
 
 # Koyeb用 サーバー立ち上げ
-server_thread()
+if os.getenv('ENV') == 'public':
+    server_thread()
 
 client.run(os.getenv('DISCORD_BOT_TOKEN'))
