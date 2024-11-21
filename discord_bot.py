@@ -14,9 +14,27 @@ client = discord.Client(intents=intents)
 load_dotenv()
 
 recognize_arena_result = recognize_arena_result.RecognizeArenaResult()
-if os.getenv('ENV') == 'private':
+if os.getenv('ENV') == 'local' or os.getenv('ENV') == 'koyeb':
     import upload_to_spreadsheet
     upload_to_spreadsheet = upload_to_spreadsheet.UploadToSpreadSheet()
+
+
+# 結果投稿用の文字列を作成
+def make_result_txt(result):
+    # 攻撃側が先頭に来るように並び替え
+    character_list = result['character_list']
+    if not result['is_atk']:
+        character_list = character_list[6:] + character_list[:6]
+
+    # 防御側が勝利
+    if result['is_atk'] ^ result['is_win']:
+        result_txt = f'防御側勝利\n攻撃側：{character_list[:6]}\n防御側：{character_list[6:]}\n'
+    # 攻撃側が勝利
+    else:
+        result_txt = f'攻撃側勝利\n攻撃側：{character_list[:6]}\n防御側：{character_list[6:]}\n'
+
+    return result_txt
+
 
 @client.event
 async def on_ready():
@@ -60,26 +78,19 @@ async def on_message(message):
 
         os.remove(save_file_path)
 
-        # 攻撃側が先頭に来るように並び替え
-        if not result['is_atk']:
-            character_list = character_list[6:] + character_list[:6]
-
-        character_list = result['character_list']
-
-        # 防御側が勝利
-        if result['is_atk'] ^ result['is_win']:
-            result_txt = f'防御側勝利\n攻撃側：{character_list[:6]}\n防御側：{character_list[6:]}\n'
-        # 攻撃側が勝利
-        else:
-            result_txt = f'攻撃側勝利\n攻撃側：{character_list[:6]}\n防御側：{character_list[6:]}\n'
         # 結果を投稿
+        result_txt = make_result_txt(result)
         await message.channel.send(result_txt)
 
-        if os.getenv('ENV') == 'private':
-            result_list.append(result)
+        # プレイヤー名を追加
+        result.update({'player_name': message.author.name})
+        result_list.append(result)
 
-    if len(result_list) > 0 and os.getenv('ENV') == 'private':
-        upload_to_spreadsheet.upload_result(result_list)
+    if len(result_list) > 0 and os.getenv('ENV') == 'local':
+        upload_to_spreadsheet.upload_result_local(result_list)
+        await message.channel.send('結果をアップロードしました')
+    elif len(result_list) > 0 and os.getenv('ENV') == 'koyeb':
+        upload_to_spreadsheet.upload_result_koyeb(result_list)
         await message.channel.send('結果をアップロードしました')
 
 
