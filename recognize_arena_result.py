@@ -91,6 +91,9 @@ class RecognizeArenaResult:
         img = cv2.imread(path)
         img_height, img_width = img.shape[:2]
 
+        if img_height != 900 or img_width != 1600:
+            raise Exception('画像の解像度が1600x900ではありません')
+
         # 自分が攻撃か防御か判定
         atk_icon_img = cv2.imread('image/atk_icon.png')
         res = cv2.matchTemplate(img, atk_icon_img, cv2.TM_CCOEFF_NORMED)
