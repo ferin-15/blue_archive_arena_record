@@ -53,3 +53,10 @@ TESSERACT_PATH=
 3. `utils/make_character_image.py` を実行します
 4. `character` フォルダの下に生成された画像を生徒名のフォルダの下に移動してください
 5. `utils/save_character_hist.py` を実行します
+
+## Google Cloud へのデプロイ
+以下の手順で discord bot が起動します
+1. Dockerを利用可能なインスタンスをGoogle Cloudで作成
+2. VMインスタンスで git clone
+3. `.env` を用意
+4. VMインスタンスで `docker-compose up --build` を実施
