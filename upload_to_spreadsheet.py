@@ -33,7 +33,7 @@ class UploadToSpreadSheet:
                 scopes=['https://www.googleapis.com/auth/spreadsheets']
             )
             self.service = build('sheets', 'v4', credentials=credentials)
-            self.sheet_id = os.getenv('SPREADSHEET_ID')
+            self.spreadsheet_id = os.getenv('SPREADSHEET_ID')
             self.sheet_name = '入力'
 
 
@@ -170,6 +170,7 @@ class UploadToSpreadSheet:
             range=f'{self.sheet_name}!A1:P1000'
         ).execute()
         first_empty_row = len(result.get('values', [])) + 1
+        print(f'{first_empty_row=}')
 
         # データの書き込み
         range_to_write = f'{self.sheet_name}!A{first_empty_row}'
@@ -182,6 +183,7 @@ class UploadToSpreadSheet:
             valueInputOption='RAW',
             body=body
         ).execute()
+        print('Uploaded to Google SpreadSheet')
 
 
 if __name__ == '__main__':
