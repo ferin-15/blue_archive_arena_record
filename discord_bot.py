@@ -93,9 +93,9 @@ async def on_message(message):
     # elif len(result_list) > 0 and os.getenv('ENV') == 'koyeb':
     #     upload_to_spreadsheet.upload_result_koyeb(result_list)
     #     await message.channel.send('結果をアップロードしました')
-    # elif len(result_list) > 0 and os.getenv('ENV') == 'google_cloud':
-    #     upload_to_spreadsheet.upload_result_google_cloud(result_list)
-    #     await message.channel.send('結果をアップロードしました')
+    elif len(result_list) > 0 and os.getenv('ENV') == 'google_cloud':
+        upload_to_spreadsheet.upload_result_google_cloud(result_list)
+        await message.channel.send('結果をアップロードしました')
 
 
 # Koyeb用 サーバー立ち上げ

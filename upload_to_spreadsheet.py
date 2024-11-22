@@ -119,6 +119,46 @@ class UploadToSpreadSheet:
         self.sheet.values_append("入力", {"valueInputOption": "USER_ENTERED"}, {"values": upload_list})
 
 
+    def upload_result_google_cloud(self, result_list):
+        date = datetime.datetime.now().strftime('%Y/%m/%d')
+
+        upload_list = []
+        for result in result_list:
+            # 攻撃側が先頭に来るように並び替え
+            character_list = result['character_list']
+            if not result['is_atk']:
+                character_list = character_list[6:] + character_list[:6]
+            
+            # 勝利側を判定
+            winner = '防御' if result['is_atk'] ^ result['is_win'] else '攻撃'
+
+            # 入力者が攻撃側か防御側か判定
+            input_player_side = '攻撃' if result['is_atk'] else '防御'
+
+            upload_list.append(
+                [
+                    date,
+                    result['player_name'],
+                    input_player_side,
+                    winner,
+                    character_list[0],
+                    character_list[1],
+                    character_list[2],
+                    character_list[3],
+                    character_list[4],
+                    character_list[5],
+                    character_list[6],
+                    character_list[7],
+                    character_list[8],
+                    character_list[9],
+                    character_list[10],
+                    character_list[11]
+                ]
+            )
+            
+        self.sheet.values_append("入力", {"valueInputOption": "USER_ENTERED"}, {"values": upload_list})
+
+
 if __name__ == '__main__':
     import glob
     import recognize_arena_result
