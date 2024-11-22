@@ -14,7 +14,7 @@ client = discord.Client(intents=intents)
 load_dotenv()
 
 recognize_arena_result = recognize_arena_result.RecognizeArenaResult()
-if os.getenv('ENV') == 'local' or os.getenv('ENV') == 'koyeb':
+if os.getenv('ENV') == 'local' or os.getenv('ENV') == 'google_cloud':
     import upload_to_spreadsheet
     upload_to_spreadsheet = upload_to_spreadsheet.UploadToSpreadSheet()
 
