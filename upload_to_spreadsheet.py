@@ -4,6 +4,8 @@ import json
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from googleapiclient.discovery import build
+import google.auth
 
 from dotenv import load_dotenv
 
@@ -16,17 +18,23 @@ class UploadToSpreadSheet:
             os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = Auth
             scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
             credentials = ServiceAccountCredentials.from_json_keyfile_name(Auth, scope)
+            Client = gspread.authorize(credentials)
+            self.sheet = Client.open_by_key(os.getenv('SPREADSHEET_ID'))
         elif os.getenv('ENV') == 'koyeb':
             json_data = os.getenv('SPREADSHEET_JSON')
             credentials_dict = json.loads(json_data)
             scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
             credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scope)
+            Client = gspread.authorize(credentials)
+            self.sheet = Client.open_by_key(os.getenv('SPREADSHEET_ID'))
         elif os.getenv('ENV') == 'google_cloud':
             # デフォルトサービスアカウントを利用
-            credentials = ServiceAccountCredentials.get_application_default()
-    
-        Client = gspread.authorize(credentials)
-        self.sheet = Client.open_by_key(os.getenv('SPREADSHEET_ID'))
+            credentials, project = google.auth.default(
+                scopes=['https://www.googleapis.com/auth/spreadsheets']
+            )
+            self.service = build('sheets', 'v4', credentials=credentials)
+            self.sheet_id = os.getenv('SPREADSHEET_ID')
+            self.sheet_name = '入力'
 
 
     def upload_result_local(self, result_list):
@@ -156,7 +164,24 @@ class UploadToSpreadSheet:
                 ]
             )
             
-        self.sheet.values_append("入力", {"valueInputOption": "USER_ENTERED"}, {"values": upload_list})
+        # データの書き込み範囲を決定
+        result = self.service.spreadsheets().values().get(
+            spreadsheetId=self.spreadsheet_id,
+            range=f'{self.sheet_name}!A1:P1000'
+        ).execute()
+        first_empty_row = len(result.get('values', [])) + 1
+
+        # データの書き込み
+        range_to_write = f'{self.sheet_name}!A{first_empty_row}'
+        body = {
+            'values': upload_list
+        }
+        self.service.spreadsheets().values().update(
+            spreadsheetId=self.spreadsheet_id,
+            range=range_to_write,
+            valueInputOption='RAW',
+            body=body
+        ).execute()
 
 
 if __name__ == '__main__':
