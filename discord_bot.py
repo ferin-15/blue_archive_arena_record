@@ -89,13 +89,17 @@ async def on_message(message):
     if len(result_list) > 0 and os.getenv('ENV') == 'local':
         upload_to_spreadsheet.upload_result_local(result_list)
         await message.channel.send('結果をアップロードしました')
-    elif len(result_list) > 0 and os.getenv('ENV') == 'koyeb':
-        upload_to_spreadsheet.upload_result_koyeb(result_list)
-        await message.channel.send('結果をアップロードしました')
+    # koyeb での Google Cloud の認証情報の管理が難しいため、一旦コメントアウト
+    # elif len(result_list) > 0 and os.getenv('ENV') == 'koyeb':
+    #     upload_to_spreadsheet.upload_result_koyeb(result_list)
+    #     await message.channel.send('結果をアップロードしました')
+    # elif len(result_list) > 0 and os.getenv('ENV') == 'google_cloud':
+    #     upload_to_spreadsheet.upload_result_google_cloud(result_list)
+    #     await message.channel.send('結果をアップロードしました')
 
 
 # Koyeb用 サーバー立ち上げ
-if os.getenv('ENV') == 'public':
+if os.getenv('ENV') == 'koyeb':
     server_thread()
 
 client.run(os.getenv('DISCORD_BOT_TOKEN'))

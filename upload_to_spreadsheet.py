@@ -21,6 +21,9 @@ class UploadToSpreadSheet:
             credentials_dict = json.loads(json_data)
             scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
             credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scope)
+        elif os.getenv('ENV') == 'google_cloud':
+            # デフォルトサービスアカウントを利用
+            credentials = ServiceAccountCredentials.get_application_default()
     
         Client = gspread.authorize(credentials)
         self.sheet = Client.open_by_key(os.getenv('SPREADSHEET_ID'))

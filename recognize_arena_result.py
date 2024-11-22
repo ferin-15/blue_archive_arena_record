@@ -7,7 +7,7 @@ from PIL import Image
 from dotenv import load_dotenv
 
 load_dotenv()
-if os.getenv('ENV') == 'private':
+if os.getenv('ENV') == 'local':
     import pyocr
 
 
@@ -148,7 +148,7 @@ class RecognizeArenaResult:
                 raise Exception(f'{i+1} 番目の生徒の認識に失敗')
 
         # 相手の名前を読む
-        if os.getenv('ENV') == 'private':
+        if os.getenv('ENV') == 'local':
             name_img = img[210 : 250, 1305 : 1550]
             enemy_name = self.recognize_text(name_img, binary_threshold=200)
         else:
