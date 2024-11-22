@@ -102,4 +102,7 @@ async def on_message(message):
 if os.getenv('ENV') == 'koyeb':
     server_thread()
 
+# 実行環境の表示
+print(os.getenv('ENV'))
+
 client.run(os.getenv('DISCORD_BOT_TOKEN'))
