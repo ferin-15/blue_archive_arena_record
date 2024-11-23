@@ -28,10 +28,10 @@ class UploadToSpreadSheet:
             Client = gspread.authorize(credentials)
             self.sheet = Client.open_by_key(os.getenv('SPREADSHEET_ID'))
         elif os.getenv('ENV') == 'google_cloud':
+            scope=['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive']
             # デフォルトサービスアカウントを利用
-            credentials, project = google.auth.default(
-                scopes=['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive']
-            )
+            credentials, project = google.auth.default(scope)
+            self.session = google.auth.transport.requests.AuthorizedSession(credentials)
             self.service = build('sheets', 'v4', credentials=credentials)
             self.spreadsheet_id = os.getenv('SPREADSHEET_ID')
             self.sheet_name = '入力'
@@ -163,7 +163,12 @@ class UploadToSpreadSheet:
                     character_list[11]
                 ]
             )
-            
+
+        print(self.session)
+        response = self.session.get("https://www.googleapis.com/oauth2/v1/tokeninfo")
+        print(response.text)
+
+        print(self.service)
         # データの書き込み範囲を決定
         result = self.service.spreadsheets().values().get(
             spreadsheetId=self.spreadsheet_id,
