@@ -30,7 +30,7 @@ class UploadToSpreadSheet:
         elif os.getenv('ENV') == 'google_cloud':
             # デフォルトサービスアカウントを利用
             credentials, project = google.auth.default(
-                scopes=['https://www.googleapis.com/auth/spreadsheets']
+                scopes=['https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive']
             )
             self.service = build('sheets', 'v4', credentials=credentials)
             self.spreadsheet_id = os.getenv('SPREADSHEET_ID')
